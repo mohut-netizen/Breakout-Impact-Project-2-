@@ -3,30 +3,27 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class heartsScript : MonoBehaviour
+//GOAL: choose cooresponding image for lives-bar based on # of lives
+public class HealthUI : MonoBehaviour
 {
-    //GOAL: choose cooresponding image for lives-bar based on # of lives
-
-    private int _lives;
-
-    [SerializeField] private Sprite _fullHeart;
-    [SerializeField] private Sprite _emptyHeart;
-
-    [SerializeField]
-    private Image[] hearts;
+    private int _lives = GameManager.Instance.Lives; //REVIEW to make sure updates as lives change
+    [SerializeField] private Sprite _fullHeartIMG;
+    [SerializeField] private Sprite _emptyHeartIMG;
+    [SerializeField] private Image[] _hearts;
 
     private void Update()
     {
-        _lives = GameManager.Instance.Lives;
-
-        foreach(Image heart in hearts)
+        //TODO initialize hearth UI only once at beginning of program
+        //set heart image placeholders
+        foreach(Image heart in _hearts)
         {
-            heart.sprite = _emptyHeart;
+            heart.sprite = _emptyHeartIMG;
         }
 
-        for (int i = 0; i < _lives; i++) //counts i till = lives
-        {
-            hearts[i].sprite = _fullHeart; //sets each heart's sprite 2 full for each life cuz
+        //TODO change so sprites are only updated when lives change
+        //fill hearts based on number of lives 
+        for (int i = 0; i < _lives; i++){
+            _hearts[i].sprite = _fullHeartIMG;
         }
 
     }

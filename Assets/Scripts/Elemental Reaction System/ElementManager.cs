@@ -27,7 +27,7 @@ public class ElementManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("elementRef is not assigned for " + gameObject.name);
+            //Debug.LogWarning("elementRef is not assigned for " + gameObject.name);
         }
     }
 
@@ -37,7 +37,7 @@ public class ElementManager : MonoBehaviour
     {
         //assign ball sprite based on element
 
-        int index = ElementRef.elementType switch //switch expression shortens swith statment. Assigns directly
+        int index = ElementRef.elementType switch
         {
             ElementType.Pyro => 1,
             ElementType.Hydro => 2,
@@ -47,7 +47,7 @@ public class ElementManager : MonoBehaviour
         };
 
         //exit method if assigned value is higher than array index. Keeps sprite as is
-        if (elementSprites.Length - 1 < index) //-1 because length can be 2, but indexes are 0, 1
+        if (elementSprites.Length - 1 < index) 
         {
             //Debug.Log("ElementSprites is shorten than picked index!");
             return;
@@ -56,7 +56,4 @@ public class ElementManager : MonoBehaviour
         //assign sprite
         refSprite.sprite = elementSprites[index];
     }
-
-
-    
 }

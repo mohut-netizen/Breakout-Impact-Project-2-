@@ -1,13 +1,11 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class BallSpawnerScript : MonoBehaviour
+public class BallSpawner : MonoBehaviour
 {
-    public static BallSpawnerScript Instance { get; private set; } //singleton makes publically accessible
-
+    public static BallSpawner Instance { get; private set; } //"singleton" makes publically accessible
     [SerializeField] private GameObject _ballPrefab;
-
-    [SerializeField] private Vector3 _spawnPosition = new Vector3(0, -7.2f, 0);
+    [SerializeField] private Vector3 _spawnPosition = new(0, -7.2f, 0);
     
 
     //private Vector2 spawnVelocity = new Vector2(0, 0);
@@ -26,11 +24,11 @@ public class BallSpawnerScript : MonoBehaviour
         }
     }
 
-
     private void Start()
     {
         SpawnBall();
     }
+
 
     public void SpawnBall()
     {

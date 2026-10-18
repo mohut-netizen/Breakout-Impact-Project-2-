@@ -23,14 +23,14 @@ public class GameEvents : MonoBehaviour
     public void BrickBroken()
     {
         //trigger event only if has listeners/subscribers
-            // onBrickBroken?.Invoke(); DOES THE SAME THING. "?" checks for listeners
+            // onBrickBroken?.Invoke(); DOES THE SAME THING. "?" checks if listeners != null
         if (onBrickBroken != null)
         {
             onBrickBroken();
         }
     }
 
-    #region Elemental Reaction System
+    #region Elemental Reaction System Events
     //create event(s)
 
     //3x3 explosion (or flower shape). Either break w/1 shot or make any brick 1 shottable
@@ -38,11 +38,8 @@ public class GameEvents : MonoBehaviour
         
     public void Overloaded()
     {
-        onOverloaded?.Invoke();
-
-        //REPLACED null check with onOverloaded?.Invoke(); to invoke directly.
-        //"?" already checks for listeners / if listeners = null
-
+        onOverloaded?.Invoke(); //REPLACED null check with onOverloaded?.Invoke(); to invoke directly.
+                                //"?" already checks for listeners / if listeners = null
     }
 
 
