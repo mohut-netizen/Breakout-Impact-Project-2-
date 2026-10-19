@@ -9,56 +9,89 @@ enum Levels
     Level2 = 2,
     Level3 = 3,
 }
+/// <summary>
+/// Contains information about the game that would need to be referenced by many different scripts.
+/// Is a singleton to serve as a single hub to the game's shared state.
+/// Listens to events fired by the GameEvents radio and performs some functionality.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    public static GameManager Instance { get; private set; } //make manager a SINGLETON (only 1 instance can exist). Public static makes it easy to access all fields and be reference its contents in many scripts using GameManager.Instance.<properties or methods>
+    private const int STARTING_LIVES = 3;
     [SerializeField] private TextMeshProUGUI scoreText;
-    [SerializeField] private const int STARTING_LIVES = 3;
-    [SerializeField] private int _score = 0;
     [SerializeField] private int _lives = STARTING_LIVES;
-    [SerializeField] private Levels _currentLevel; //TODO set this manually in editor per stage
+    [SerializeField] private int _score = 0;
+    [SerializeField] private Levels _currentLevel = 0; //TODO set this manually in editor per stage
 
-    public int Lives => _lives; //creates a public getter for _lives. => is shorthand for {get; private set;} to avoid setting accidentally
-
+    //Read-only public fields serving as getters for the private fields so they can be accesses by other scripts using GameManager.Instance.Field.
+    public int Lives => _lives; // "=> <field>" returns field (lambda calling the getter)
+    public int Score => _score;
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this) //check if an Instance already exists and is not equal to this object. If so, a duplicate is found
         {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(Instance);
+            Destroy(this.gameObject); //Clears duplicate managers that arent the original one. If didnt add "&& Instance != this", og instance would be destroyed too
+            return; //to avoid reassigning Instance when loading scene (keeps the og)
         }
 
-        DontDestroyOnLoad(this.gameObject);
+        //code is only reached for the first instance since Instance will be null
+        Instance = this; 
+        DontDestroyOnLoad(this.gameObject); //makes the first instance persist across scenes
     }
    
-
+    //One-time game initialization after initial setup in Awake()
     private void Start()
     {
-        _score = 0;
-        _lives = 3;
-
-        GameEvents.Instance.onBrickBroken += IncreaseScore; //subscribes to event. Triggers when
-                                                            //event is fired
         SceneManager.LoadScene("level" + _currentLevel);
     }
 
-    private void Update()
+    #region OnEnable and OnDisable Loading Code
+    /* Explanation for OnEnable and OnDisable:
+     *
+     * Run every time script or game object or component is toggled ON/OFF in the unity inspector.
+     * Disabling an object subscpends it, (like unchecking the "show" box in the inspector to hide a UI object) not destroy it from memory, prevent it using resources and loading
+     * 
+     * NOTE: Great for resetting temporary state, like event subscription
+     * NOTE: SetActive(true/false) is great for hiding/showing UI elements quickly instead of destroying the UI and recreating it everytime user pauses
+     */
+    ///Runs every time the script/object is activated/turned on
+    ///Subscribes <method> to event and listens. Calls method() when event is fired
+    private void OnEnable()
     {
-        if (_lives == 0)
-        {
-            //TODO end game when lives = 0
-            //Debug.Log("Game Over!");
-        }
-
-        scoreText.SetText (_score.ToString()); //set text UI
+        GameEvents.Instance.OnBrickBroken += IncreaseScore;
+        GameEvents.Instance.OnGameEnded += EndGame;
     }
 
+    ///Runs every time script is disabled(like unchecking the "show" box in the inspector to hide or show a UI object and prevent it from running code)
+    ///Unsubscribe from events every time object is disabled to avoid memory leaks 
+    private void OnDisable()
+    {
+        GameEvents.Instance.OnBrickBroken -= IncreaseScore;
+        GameEvents.Instance.OnGameEnded -= EndGame;
+    }
+    #endregion
+
+    private void Update()
+    {
+        //REVIEW to make sure it is proper to update the text UI every frame or only when certain conditions are met (like score changes)
+        scoreText.SetText(_score.ToString()); //set text UI
+    }
+
+    //REVIEW how to increase score and end game when certain events are fired
     /// <summary>
-    /// Increase score when certain conditions are met, like when certain events (eg. onBrickBroken) are fired
+    /// NOTE triggered when OnGameEnded is fired
+    /// </summary>
+    public void EndGame()
+    {
+        //TODO toggle UI for gameover
+        Debug.Log("Game Over!");
+    }
+
+
+    /// <summary>
+    /// Increase score when certain conditions are met, like when certain events (eg. onBrickBroken) are fired.
+    /// Functions sorta like a public Set() to externally modify private state 
     /// </summary>
     public void IncreaseScore() 
     {
@@ -69,11 +102,15 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Score is increased!");
     }
+    
     public void DecreaseLives()
     {
-        _lives = Mathf.Max(_lives - 1, 0); //decrease lives, then return the bigger of the two args (0 or lives, to make sure lives isn't <0. "Clamps" it at 0)
-        Debug.Log("Lost a life! Lives left:" + _lives);
-    }
+        _lives = Mathf.Max(_lives - 1, 0); //return either 0 or lives-1, whatever is bigger ("Clamps" lives at 0 make sure lives isn't <0. )
+        Debug.Log("Lost a life! Lives left: " + _lives);
 
-    
+        if (_lives == 0)
+        {
+            GameEvents.Instance.TriggerGameEnded();
+        }
+    }
 }

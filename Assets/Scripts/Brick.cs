@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class Brick : MonoBehaviour
 {
-    [SerializeField] private ElementType element = ElementType.NoElement; //assign element as scriptable object element in inspector
+    //[SerializeField] private ElementType element = ElementType.NoElement; //assign element as scriptable object element in inspector
     [SerializeField] private const int STARTING_HP = 1; //TODO temporary: set manually in inspector for each brick type
     [SerializeField] private int _health = STARTING_HP;
 
     private void Awake()
     {
-        element = GetComponent<ElementType>();
+        //element = GetComponent<ElementType>();
     }
 
     private void Update()
@@ -17,7 +17,7 @@ public class Brick : MonoBehaviour
         if (_health <= 0)
         {
             Destroy(gameObject);
-            GameEvents.Instance.BrickBroken(); //fire event, trigger subscribers (increase score)
+            GameEvents.Instance.TriggerBrickBroken(); //fire event and trigger subscribers (like increase score)
 
         }
     }

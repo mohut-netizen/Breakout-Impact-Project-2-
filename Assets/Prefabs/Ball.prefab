@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 6733173150533296639}
   - component: {fileID: 727749305017669999}
   - component: {fileID: 5653099708807756755}
-  - component: {fileID: 2615407386563140178}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Ball
@@ -166,27 +165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e26805608f91934e959f1e37f4e7907, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  elementManager: {fileID: 0}
-  paddleRB: {fileID: 0}
-  maxBounceAngle: 75
-  speed: 12
---- !u!114 &2615407386563140178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2964718826871964739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aaf88f2ffb2ba864bb05a6f01b94ebd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  elementSprites:
-  - {fileID: 7529040096300019315, guid: c5152e7df6cecc54c995395b60cfaa0d, type: 3}
-  - {fileID: 1176145887, guid: c5152e7df6cecc54c995395b60cfaa0d, type: 3}
-  - {fileID: 2126616061, guid: c5152e7df6cecc54c995395b60cfaa0d, type: 3}
-  - {fileID: 1860479211, guid: c5152e7df6cecc54c995395b60cfaa0d, type: 3}
-  - {fileID: -371329026, guid: c5152e7df6cecc54c995395b60cfaa0d, type: 3}
-  refSprite: {fileID: 0}
-  ElementRef: {fileID: 11400000, guid: a7f19cd2ccfc7034d85658db1d9d8eff, type: 2}
+  _ballRB: {fileID: 0}
+  _paddleRB: {fileID: 0}
+  _launchAngle: 0
+  _speed: 12
+  _inSpawn: 1

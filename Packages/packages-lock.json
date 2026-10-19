@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.meaf75.versionator": {
+      "version": "https://github.com/meaf75/Versionator.git?path=/Packages/com.meaf75.versionator",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b19165d180b25ea6483e20b1b709597f650ed3d2"
+    },
     "com.unity.2d.animation": {
       "version": "10.1.3",
       "depth": 1,

@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1be3ff2b9aca940981ffa765832f51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ballPrefab: {fileID: 2964718826871964739, guid: b57c0362585559b4a90f8a80ae725314, type: 3}
-  spawnPosition: {x: 0, y: -7.2, z: 0}
+  _ballPrefab: {fileID: 2964718826871964739, guid: b57c0362585559b4a90f8a80ae725314, type: 3}
+  _spawnPosition: {x: 0, y: -7.2, z: 0}
