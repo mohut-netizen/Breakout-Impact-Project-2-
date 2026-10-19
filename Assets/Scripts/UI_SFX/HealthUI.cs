@@ -4,30 +4,59 @@ using UnityEngine;
 using UnityEngine.UI;
 
 //GOAL: choose cooresponding image for lives-bar based on # of lives
-public class HealthUI : MonoBehaviour
+public class HealthUI : MonoBehaviour, IUserInterface
 {
-    private int _lives = GameManager.Instance.Lives; //REVIEW to make sure updates as lives change
+    private int _currentHP = GameManager.Instance.Lives; //references the starting value of lives in GameManager to set the UI to the correct value at start and compare HP changes.
+                                                        //NOTE: this is a value variable, so _hp will not update when the value of lives in GameManager changes. Must change manually
     [SerializeField] private Sprite _fullHeartIMG;
     [SerializeField] private Sprite _emptyHeartIMG;
-    [SerializeField] private Image[] _hearts;
+    [SerializeField] private Image[] _hearts = new Image[GameManager.Instance.MAX_LIVES];
 
-    private void Update()
+    private void OnEnable()
     {
-        //TODO initialize hearth UI only once at beginning of program
+        GameEvents.Instance.OnGameStarted += InitializeUI; //initialize UI to current value when game starts
+    }
+
+    void OnDisable()
+    {
+        GameEvents.Instance.OnGameStarted -= InitializeUI;
+    }
+
+
+    public void InitilizeUI()
+    {
         //set heart image placeholders
-        foreach(Image heart in _hearts)
+        foreach (Image heart in _hearts)
         {
             heart.sprite = _emptyHeartIMG;
         }
 
-        //TODO change so sprites are only updated when lives change
-        //fill hearts based on number of lives 
-        for (int i = 0; i < _lives; i++){
+        //fill hearts based on starting number of lives 
+        for (int i = 0; i < _currentHP; i++)
+        {
             _hearts[i].sprite = _fullHeartIMG;
         }
+    }
+    /// <summary>
+    /// when a relevant event is fired (like OnLivesChanged), update the UI to reflect the current value of the variable it is displaying
+    /// dont worry about having to update multiple hearts at once, because every single time lives change, a new
+    /// TriggerLivesChange() will be invoked and UpdatesUI per each instance of lives changing
+    /// </summary>
+    public void UpdateUI()
+    {
+        //if lost a life, update the heart that corresponds to the lost life to empty.
+        if (GameManager.Instance.Lives < _currentHP)
+        {
+            _hearts[_currentHP].sprite = _emptyHeartIMG; //set the heart that corresponds to the lost life to empty
+        }
+        else //If gained a life, update the heart that corresponds to the gained life to full (NOTE: dont worry about going out of bounds because Lives will not go above the max number of lives is 3 and the array has 3 elements)
+        {
+            _hearts[GameManager.Instance.Lives].sprite = _fullHeartIMG;
+        }
+
+        _currentHP = GameManager.Instance.Lives; //updates the local variable to the current value of lives in GameManager
 
     }
-
 }
 
 /*private RawImage currentImage;
