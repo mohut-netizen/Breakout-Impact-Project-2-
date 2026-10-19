@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class BallSpawner : MonoBehaviour
 {
-    public static BallSpawner Instance { get; private set; } //"singleton" make it a single global instance
+    public static BallSpawner Instance { get; private set; } //"singleton" makes it a single global instance to access info and modify about its state using BallSpawner.Instance.<properties or methods> from other scripts. Public static makes it easy to access all fields and be reference its contents in many scripts using GameManager.Instance.<fields or methods>
     [SerializeField] private GameObject _ballPrefab;
     [SerializeField] private Rigidbody2D _paddleRB; //used to get paddle position to spawn ball above paddle
-    [SerializeField] private Vector2 _spawnPosition; 
+    [SerializeField] private Vector2 _spawnPosition; //should be slightly above paddle at time of spawning
     [SerializeField] private Vector2 _spawnVelocity;
 
     private void Awake()
@@ -25,13 +25,20 @@ public class BallSpawner : MonoBehaviour
         Instance = this; //reached only when once Instance is null
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        SpawnBall();
-
+        GameEvents.Instance.OnGameStarted += SpawnBall; //spawn ball when game starts
+        GameEvents.Instance.OnBallDestroyed += SpawnBall; //subscribe to event and call SpawnBall() when event is fired
+    }
+    private void OnDisable()
+    {
+        GameEvents.Instance.OnBallDestroyed -= SpawnBall; //unsubscribe to avoid memory leaks
     }
 
-    // TODO makes ball spawn !!!ABOVE paddle!!!
+
+    /// <summary>
+    /// Makes ball spawn above paddle
+    /// </summary>
     public void SpawnBall()
     {
         //make sure ballPrefab exists before instantiating a null object

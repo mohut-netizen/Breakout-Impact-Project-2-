@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 7511766370960198912}
   - component: {fileID: 3391122919361586987}
   - component: {fileID: 2239741462010820672}
-  - component: {fileID: 5117880333197819905}
   m_Layer: 0
   m_Name: Normal Brick 1
   m_TagString: Brick
@@ -103,7 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5100253e71d60b944a5ea4db69b7bb9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brickLives: 1
+  _health: 1
 --- !u!61 &3391122919361586987
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -177,18 +176,3 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &5117880333197819905
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 378675296350439351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aaf88f2ffb2ba864bb05a6f01b94ebd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  elementSprites: []
-  refSprite: {fileID: 0}
-  elementRef: {fileID: 11400000, guid: c6467b77c9a7a194f80ad3d86e254d88, type: 2}

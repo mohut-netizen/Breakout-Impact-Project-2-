@@ -17,8 +17,8 @@ enum Levels
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; } //make manager a SINGLETON (only 1 instance can exist). Public static makes it easy to access all fields and be reference its contents in many scripts using GameManager.Instance.<properties or methods>
-    private const int STARTING_LIVES = 3;
-    [SerializeField] private TextMeshProUGUI scoreText;
+    public const int MAX_LIVES = 3; //public constant to be referenced by other scripts (like HealthUI) to set the size of the hearts array and prevent out of bounds errors
+    private const int STARTING_LIVES = MAX_LIVES;
     [SerializeField] private int _lives = STARTING_LIVES;
     [SerializeField] private int _score = 0;
     [SerializeField] private Levels _currentLevel = 0; //TODO set this manually in editor per stage
@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         SceneManager.LoadScene("level" + _currentLevel);
+        GameEvents.Instance.TriggerGameStarted(); //TODO: temporary. trigger game started only after start timer passed
     }
 
     #region OnEnable and OnDisable Loading Code
@@ -61,6 +62,7 @@ public class GameManager : MonoBehaviour
     {
         GameEvents.Instance.OnBrickBroken += IncreaseScore;
         GameEvents.Instance.OnGameEnded += EndGame;
+        GameEvents.Instance.OnBallDestroyed += DecreaseLives;
     }
 
     ///Runs every time script is disabled(like unchecking the "show" box in the inspector to hide or show a UI object and prevent it from running code)
@@ -69,14 +71,10 @@ public class GameManager : MonoBehaviour
     {
         GameEvents.Instance.OnBrickBroken -= IncreaseScore;
         GameEvents.Instance.OnGameEnded -= EndGame;
+        GameEvents.Instance.OnBallDestroyed -= DecreaseLives;
     }
     #endregion
 
-    private void Update()
-    {
-        //REVIEW to make sure it is proper to update the text UI every frame or only when certain conditions are met (like score changes)
-        scoreText.SetText(_score.ToString()); //set text UI
-    }
 
     //REVIEW how to increase score and end game when certain events are fired
     /// <summary>
@@ -99,6 +97,8 @@ public class GameManager : MonoBehaviour
 
         //TODO play sfx
         //TODO add score to UI
+
+        GameEvents.Instance.TriggerScoreIncreased(); //notify UI to update score display when score is increased
 
         Debug.Log("Score is increased!");
     }

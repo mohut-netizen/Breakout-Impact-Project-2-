@@ -11,7 +11,6 @@ public class Ball : MonoBehaviour
     [SerializeField] private float _launchAngle;
     [SerializeField] private float _speed = 12;
     [SerializeField] private bool _inSpawn = true; //true when instantiated, changed when launched
-
     [SerializeField] private float _moveVelocity;
 
 
@@ -19,32 +18,10 @@ public class Ball : MonoBehaviour
     {
         //ElementManager = GetComponent<ElementManager>();
         _paddleRB = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>();
-    }
-
-    void Start()
-    {
         _ballRB = GetComponent<Rigidbody2D>(); //reference the component <T> that is attached to this game object
+
     }
 
-    /// <summary>
-    /// make ball hover over paddle when preparing to launch (still in spawn))
-    /// </summary>
-    private void HoverOverPaddleInSpawn()
-    {
-
-        //TODO make the ball a child of the paddle so it follows its x-y position
-        if (_inSpawn)
-        {
-            _ballRB.position = _paddleRB.position + new Vector2(0, 2); //make the ball's position
-        }
-    }
-    private void LaunchBall()
-    {
-
-        SetLaunchAngle();
-        _ballRB.linearVelocity = transform.up * _speed;
-        _inSpawn = false;
-    }
 
     void Update()
     {
@@ -59,17 +36,31 @@ public class Ball : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
-        HoverOverPaddleInSpawn();
+        if (_inSpawn)
+        {
+            HoverOverPaddle();
+        }
     }
 
-    
+    /// <summary>
+    /// make ball hover over paddle, such as when preparing to launch (still in spawn)
+    /// </summary>
+    private void HoverOverPaddle()
+    {
+        _ballRB.position = _paddleRB.position + new Vector2(0, 2); //make the ball's position slightly above the paddle
+
+    }
+    private void LaunchBall()
+    {
+        SetLaunchAngle();
+        _ballRB.linearVelocity = transform.up * _speed;
+        _inSpawn = false;
+    }
     private void SetLaunchAngle()
     {
         _launchAngle = UnityEngine.Random.Range(-MAX_LAUNCH_ANGLE, MAX_LAUNCH_ANGLE);
         _ballRB.transform.rotation = Quaternion.Euler(0, 0, _launchAngle); //cannot assign rotation directly, must use Quaternion
     }
-    
-
 
     /// <summary>
     /// Bounce ball off of paddle dynamically based on collision point
@@ -139,17 +130,14 @@ public class Ball : MonoBehaviour
     }
 
     ///destroy ball when crossing deadzone
+    ///Fire BallDestroyed event to notify GameManager to decrease lives and spawn new ball
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Deadzone"))
         {
             Destroy(gameObject);
-
-
-            GameManager.Instance.DecreaseLives();
-
-            BallSpawner.Instance.SpawnBall();
-
+            Debug.Log("Ball passed deadzone. Destroyed ball");
+            GameEvents.Instance.TriggerBallDestroyed(); //fire event to notify other scripts decrease lives and spawn new ball while avoiding dependencies
         }
     }
 

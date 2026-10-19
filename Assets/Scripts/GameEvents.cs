@@ -20,13 +20,29 @@ public class GameEvents : MonoBehaviour
     
     //Setup the Events (the radio)
     public event Action OnBrickBroken; //null when has no listeners
-    public event Action OnGameEnded;
-    
+    public event Action OnBallDestroyed;
+    public event Action OnLivesDecreased;
+    public event Action OnScoreIncreased;
 
-    //SECTION Methods to fire the events (broadcast the signals)
-    //Works ONLY if has listeners/subscribers meaning OnBrickBroken != null, using null operator "?")
+    //Set up Signal Broadcasters (public methods to fire the events in any scripts). Works ONLY if has listeners/subscribers meaning OnBrickBroken != null, using null operator "?")
     public void TriggerBrickBroken() => OnBrickBroken?.Invoke(); //when called, fire off the event
+    public void TriggerBallDestroyed() => OnBallDestroyed?.Invoke();
+    public void TriggerLivesDecreased() => OnLivesDecreased?.Invoke();
+    public void TriggerScoreIncreased() => OnScoreIncreased?.Invoke();
+
+    //Game State Events
+    public event Action OnGameStarted;
+    public event Action OnGameEnded;
+    public event Action OnGamePaused;
+    public event Action OnGameResumed;
+    public event Action OnGameRestarted;
+    public void TriggerGameStarted() => OnGameEnded?.Invoke(); //use to set up hide game starting UI and allow player to start moving/ball to spawn
     public void TriggerGameEnded() => OnGameEnded?.Invoke(); // lambda => is easy way to write one line function like "{ OnGameEnded?.Invoke(); }"
+    public void TriggerGamePaused() => OnGamePaused?.Invoke();
+    public void TriggerGameResumed() => OnGameResumed?.Invoke();
+    public void TriggerGameRestarted() => OnGameRestarted?.Invoke();
+
+
 
 
     #region Elemental Reaction System Events
